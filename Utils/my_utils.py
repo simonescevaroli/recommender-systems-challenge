@@ -18,6 +18,15 @@ def storeRecommendations(users_original, items_indices, item_index_to_originalID
             items_string = ' '.join(map(str, items_list))
             csv_writer.writerow([user_id, items_string])
 
+def newStoreRecommendations(users, items, filename='output.csv'):
+    import csv
+    with open(filename, 'w', newline='') as file:
+        csv_writer = csv.writer(file)
+        csv_writer.writerow(['user_id', 'item_list'])
+        for user_id, items_list in zip(users, items):
+            items_string = ' '.join(map(str, items_list))
+            csv_writer.writerow([user_id, items_string])
+
 
 def readData():
     csv = pd.read_csv('data_train.csv', sep=',')
@@ -42,6 +51,12 @@ def preProcess():
     # define URM
     URM = sps.coo_matrix((csv["data"].values, (csv["row"].values, csv["col"].values)))   
     return URM, user_originalID_to_index, item_originalID_to_index, item_index_to_originalID
+
+def newPreProcess():
+    csv = pd.read_csv('data_train.csv', sep=',')
+    # define URM
+    URM = sps.coo_matrix((csv["data"].values, (csv["row"].values, csv["col"].values)))   
+    return URM
 
 
 def splitURM(URM):

@@ -26,6 +26,7 @@ def newStoreRecommendations(users, items, filename='output.csv'):
         for user_id, items_list in zip(users, items):
             items_string = ' '.join(map(str, items_list))
             csv_writer.writerow([user_id, items_string])
+    print("Recommendations stored in " + str(filename))
 
 
 def readData():
@@ -70,9 +71,5 @@ def MAP10(URM_test, recommender):
     evaluator_test = EvaluatorHoldout(URM_test, cutoff_list=[10])
     result_df, _ = evaluator_test.evaluateRecommender(recommender)
     print("MAP10 = " + str(result_df.loc[10]["MAP"]))
-    
-    
-    
-
 
 

@@ -20,16 +20,24 @@ def AP(recommended_items, relevant_items):
 
 def merge_recommendations(rec1, rec2):
     merged_list = []
+    for list1, list2 in zip(rec1, rec2):
+        merged_item = []
+        for item1, item2 in zip(list1, list2):
+            if item1 not in merged_item:
+                merged_item.append(item1)
+            if item2 not in merged_item:
+                merged_item.append(item2)
+        merged_list.append(merged_item[:10])
+    return merged_list
+
+def merge_recommended_items(list1, list2):
     merged_item = []
-    for item1, item2 in zip(rec1, rec2):
-        
+    for item1, item2 in zip(list1, list2):
         if item1 not in merged_item:
             merged_item.append(item1)
         if item2 not in merged_item:
             merged_item.append(item2)
-            
-    merged_list.append(merged_item[:10])
-    return merged_list
+    return merged_item
 
 
 def evaluate_algorithm(URM_test, recommender_object, at=10):
@@ -57,7 +65,7 @@ def evaluate_recommendations(URM_test, recommender_object1, recommender_object2,
             num_eval+=1
             recommended_items1 = recommender_object1.recommend(user_id, cutoff=at)
             recommended_items2 = recommender_object2.recommend(user_id, cutoff=at)
-            recommended_items = merge_recommendations(recommended_items1, recommended_items2)
+            recommended_items = merge_recommended_items(recommended_items1, recommended_items2)
             cumulative_AP += AP(recommended_items, relevant_items)
             
     MAP = cumulative_AP / num_eval

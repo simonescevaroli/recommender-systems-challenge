@@ -6,18 +6,6 @@ from Evaluation.MyEvaluation import *
 from Data_manager.split_functions.split_train_validation_random_holdout import split_train_in_two_percentage_global_sample
 import scipy.sparse as sp
 
-
-
-def storeRecommendations(users_original, items_indices, item_index_to_originalID, filename='output.csv'):
-    import csv
-    item_original = [item_index_to_originalID[it] for it in items_indices]
-    with open(filename, 'w', newline='') as file:
-        csv_writer = csv.writer(file)
-        csv_writer.writerow(['user_id', 'item_list'])
-        for user_id, items_list in zip(users_original, item_original):
-            items_string = ' '.join(map(str, items_list))
-            csv_writer.writerow([user_id, items_string])
-
 def newStoreRecommendations(users, items, filename='output.csv'):
     import csv
     with open(filename, 'w', newline='') as file:
@@ -72,4 +60,13 @@ def MAP10(URM_test, recommender):
     result_df, _ = evaluator_test.evaluateRecommender(recommender)
     print("MAP10 = " + str(result_df.loc[10]["MAP"]))
 
-
+class SaveResults(object):
+    
+    def __init__(self):
+        self.results_df = pd.DataFrame(columns=["result"])
+    
+    def __call__(self, optuna_study, optuna_trial):
+        hyperparam_dict = optuna_trial.params.copy()
+        hyperparam_dict["result"] = optuna_trial.values[0]
+        
+        self.results_df = self.results_df.append(hyperparam_dict, ignore_index=True)
